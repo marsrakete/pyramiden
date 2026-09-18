@@ -63,3 +63,9 @@ Aus den ursprünglich neun Flächen werden deshalb:
 **9 − 2 − 2 = 5 Flächen**
 
 Das 3D-Modell macht diesen zunächst etwas unintuitiven Effekt sichtbar.
+
+## Interaktives 3D-Modell
+
+Das Rätsel lässt sich direkt im Browser ausprobieren:
+
+[3D-Modell öffnen](https://marsrakete.github.io/pyramiden/)
