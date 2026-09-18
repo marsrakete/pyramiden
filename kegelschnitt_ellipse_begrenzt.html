@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Kegelschnitt – Ellipse in 3D</title>
+    <link rel="stylesheet" href="./styles/ellipse.css" />
+  </head>
+  <body>
+    <div id="app">
+      <section id="ui">
+        <h1>Kegelschnitt: Ellipse</h1>
+        <div class="lead">
+          Die braune Fläche ist die Schnittebene. Die gelbe Kurve wird aus exakt
+          derselben Ebenengleichung berechnet und liegt deshalb immer auf dieser
+          Fläche und auf dem Kegelmantel.
+        </div>
+        <label for="angle"
+          >Neigung der Ebene <span class="v" id="av"></span></label
+        ><input id="angle" type="range" min="0" max="55" step=".2" value="38" />
+        <label for="height"
+          >Höhe am Mittelpunkt <span class="v" id="hv"></span></label
+        ><input
+          id="height"
+          type="range"
+          min="1"
+          max="3.8"
+          step=".05"
+          value="2.8"
+        />
+        <label for="opacity"
+          >Transparenz Kegel <span class="v" id="ov"></span></label
+        ><input
+          id="opacity"
+          type="range"
+          min=".08"
+          max=".65"
+          step=".02"
+          value=".25"
+        />
+        <button
+          id="animate"
+          data-start="Animation starten"
+          data-stop="Animation stoppen"
+        >
+          Animation starten</button
+        ><button class="secondary" id="reset">Ausgangslage</button>
+        <div class="box" id="info"></div>
+        <div class="box">
+          <b>Geometrie</b><br />Kegel: <code>x² + z² = (R/H)² y²</code
+          ><br />Ebene: <code>y = h + tan(α)·x</code><br /><br />Beide
+          Darstellungen verwenden dieselbe Gleichung. Kegelkoordinaten und
+          Three.js-Kegel sind identisch orientiert: Spitze bei y=0, Grundkreis
+          bei y=H.
+        </div>
+        <div class="box">
+          <b>Bedienung</b><br />1 Finger/Maus: drehen<br />2 Finger/Mausrad:
+          zoomen
+        </div>
+      </section>
+      <div id="view">
+        <div id="badge">Schnitt: <b>Ellipse</b></div>
+      </div>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <template id="info-template">
+      Schnittform: <b>Ellipse</b><br />
+      Halbachsen: <span data-value="axes"></span><br />
+      Exzentrizität: <span data-value="eccentricity"></span><br />
+      Höhenbereich: <span data-value="range"></span><br />
+      <b data-message="finite"
+        >Die vollständige Ellipse liegt auf dem dargestellten Kegelmantel.</b
+      >
+      <b data-message="limit">Grenzwert erreicht.</b><br />
+      Maximale Höhe bei diesem Winkel: <span data-value="maximum"></span>
+    </template>
+    <script type="module" src="./ellipse/main.js"></script>
+  </body>
+</html>

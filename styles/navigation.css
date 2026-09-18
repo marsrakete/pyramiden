@@ -1,0 +1,45 @@
+.model-links {
+  display: grid;
+  gap: 9px;
+  margin: 0 0 23px;
+}
+.model-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  padding: 12px 13px;
+  border: 1px solid #ffffff20;
+  border-radius: 11px;
+  background: linear-gradient(125deg, #293446, #1e2632);
+  color: #e9eff8;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.model-link:hover {
+  background: #2c3a50;
+  border-color: #80ded0;
+}
+.model-link:focus-visible {
+  outline: 2px solid #80ded0;
+  outline-offset: 3px;
+}
+.model-link .symbol {
+  color: #80ded0;
+  font-size: 25px;
+}
+.model-link strong {
+  display: block;
+  font-size: 13px;
+}
+.model-link small {
+  display: block;
+  color: #a9b8cd;
+  margin-top: 3px;
+  font-size: 11px;
+}
+.model-link .arrow {
+  margin-left: auto;
+  color: #a9b8cd;
+}

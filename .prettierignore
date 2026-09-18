@@ -1,0 +1,5 @@
+AGENTS.md
+manifest.webmanifest
+package-lock.json
+test-results/
+playwright-report/
