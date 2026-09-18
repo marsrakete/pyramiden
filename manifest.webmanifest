@@ -1,0 +1,11 @@
+{
+  "name": "Zwei Pyramiden – 3D-Faltmodell",
+  "short_name": "Pyramiden",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#111111",
+  "icons": [
+    {"src": "pyramiden-icon.png", "sizes": "any", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
