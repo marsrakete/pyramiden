@@ -31,14 +31,6 @@ input {
   height: 100dvh;
   overflow-y: auto;
 }
-.back {
-  color: #99aac5;
-  text-decoration: none;
-  font-size: 12px;
-}
-.back:hover {
-  color: white;
-}
 .eyebrow {
   color: #8497b8;
   text-transform: uppercase;
