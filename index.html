@@ -15,7 +15,13 @@ button{width:100%;padding:10px;margin-top:12px;border:0;border-radius:7px;cursor
 .primary{background:#eee;color:#111}.secondary{background:#333;color:#eee}
 .row{margin-top:15px;font-size:13px}.hint{font-size:12px;line-height:1.45;color:#aaa;margin-top:18px}
 #status{margin-top:14px;padding:10px;background:#252525;border-radius:7px;font-size:13px;line-height:1.45}
-@media(max-width:700px){#app{grid-template-columns:1fr;grid-template-rows:auto 1fr}#ui{padding:10px}h2{font-size:16px}.hint{display:none}}
+@media(max-width:700px){
+ html,body{height:auto;min-height:100%;overflow:auto}
+ #app{height:auto;min-height:100dvh;display:flex;flex-direction:column}
+ #ui{padding:12px}
+ #view{height:62dvh;min-height:420px;width:100%}
+ h2{font-size:18px}.hint{display:none}
+}
 </style>
 </head>
 <body>
@@ -35,7 +41,7 @@ button{width:100%;padding:10px;margin-top:12px;border:0;border-radius:7px;cursor
 <label>Klappwinkel <span class="value" id="av"></span></label>
 <input id="angle" type="range" min="0" max="180" step=".1" value="52.4">
 <button class="primary" id="meet">Spitzen zusammenführen</button>
-<button class="secondary" id="reset">Ausgangslage</button>
+<button class="secondary" id="reset">Ausgangslage (5 / 3 / 2 / 2 / 2,4 / 52,4°)</button>
 <button class="secondary" id="finalMode">Fertiger Körper: AUS</button>
 <label>Koplanar-Toleranz <span class="value" id="tolv">1.0°</span></label>
 <input id="tol" type="range" min="0.1" max="8" step=".1" value="1">
@@ -126,6 +132,40 @@ function buildFinal(p){
  }
 }
 
+
+function fitCameraToVisibleObject(){
+ const objects=finalMode ? [groupFinal] : [groupQ,groupT];
+ const box=new THREE.Box3();
+ let found=false;
+ for(const o of objects){
+   o.updateWorldMatrix(true,true);
+   const b=new THREE.Box3().setFromObject(o);
+   if(!b.isEmpty()){ box.union(b); found=true; }
+ }
+ if(!found) return;
+
+ const center=box.getCenter(new THREE.Vector3());
+ const size=box.getSize(new THREE.Vector3());
+ const maxSize=Math.max(size.x,size.y,size.z,0.1);
+
+ // Preserve the current viewing direction, but point it at the actual model.
+ let dir=new THREE.Vector3().subVectors(camera.position,controls.target);
+ if(dir.lengthSq()<0.001) dir.set(1,1,1);
+ dir.normalize();
+
+ const vFov=THREE.MathUtils.degToRad(camera.fov);
+ const hFov=2*Math.atan(Math.tan(vFov/2)*Math.max(camera.aspect,0.1));
+ const limitingFov=Math.min(vFov,hFov);
+ const distance=(maxSize/2)/Math.tan(limitingFov/2)*1.35;
+
+ controls.target.copy(center);
+ camera.position.copy(center).add(dir.multiplyScalar(distance));
+ camera.near=Math.max(0.01,distance/100);
+ camera.far=Math.max(100,distance*100);
+ camera.updateProjectionMatrix();
+ controls.update();
+}
+
 // Scharnierkante liegt auf X-Achse: (-w/2,0,0) bis (w/2,0,0).
 // Quadrat liegt auf +Z, Dreieck auf -Z. Beide Pyramidenspitzen zunächst auf +Y.
 function rebuild(){
@@ -148,6 +188,7 @@ function rebuild(){
  lineHinge=new THREE.Line(hg,new THREE.LineBasicMaterial({color:0xff3030}));
  scene.add(lineHinge); lineHinge.visible=!finalMode;
  updateLabels(); updateStatus();
+ fitCameraToVisibleObject();
 }
 function apexQ(){
  const p=params(); return new THREE.Vector3(0,p.hq,p.dq/2);
@@ -198,13 +239,21 @@ document.getElementById('finalMode').onclick=()=>{
  document.getElementById('finalMode').textContent='Fertiger Körper: '+(finalMode?'AN':'AUS');
  rebuild();
 };
-document.getElementById('reset').onclick=()=>{el.angle.value=0;rebuild()};
+document.getElementById('reset').onclick=()=>{
+ const defaults={w:5,dq:3,dt:2,hq:2,ht:2.4,angle:52.4};
+ for(const [k,v] of Object.entries(defaults)) el[k].value=v;
+ document.getElementById('tol').value=1;
+ document.getElementById('tolv').textContent='1.0°';
+ rebuild();
+};
 document.getElementById('meet').onclick=()=>{
  const [a,d]=bestMeetAngle(); el.angle.value=a; rebuild();
 };
 function resize(){
  const w=view.clientWidth,h=view.clientHeight;
+ if(!w || !h) return;
  renderer.setSize(w,h,false); camera.aspect=w/h;camera.updateProjectionMatrix();
+ fitCameraToVisibleObject();
 }
 new ResizeObserver(resize).observe(view);
 rebuild(); resize();
