@@ -48,6 +48,18 @@ export function createEllipseModel(scene) {
   const curveMat = new THREE.LineBasicMaterial({ color: 0xffe16b });
   const curve = new THREE.LineLoop(new THREE.BufferGeometry(), curveMat);
   scene.add(curve);
+  const sectionMesh = new THREE.Mesh(
+    new THREE.BufferGeometry(),
+    new THREE.MeshBasicMaterial({
+      color: 0xffd45c,
+      transparent: true,
+      opacity: 0.48,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    }),
+  );
+  sectionMesh.visible = false;
+  scene.add(sectionMesh);
 
   /**
    * Richtet die Fläche an der Ebenengleichung y = h + m*x aus.
@@ -72,9 +84,10 @@ export function createEllipseModel(scene) {
    * @param {number} slope Steigung der Ebene.
    * @param {number} opacity Transparenzwert des Kegels.
    * @param {object|null} section Berechnete Schnittkurve oder null für einen offenen Schnitt.
+   * @param {boolean} sectionFilled Gibt an, ob die Ellipsenfläche eingefärbt wird.
    * @returns {void} Ergebnis der beschriebenen Operation.
    */
-  function update(height, slope, opacity, section) {
+  function update(height, slope, opacity, section, sectionFilled) {
     setPlaneFromEquation(height, slope);
     cone.material.opacity = opacity;
     const points = [];
@@ -85,6 +98,27 @@ export function createEllipseModel(scene) {
     }
     curve.geometry.dispose();
     curve.geometry = new THREE.BufferGeometry().setFromPoints(points);
+    updateSectionFill(points, sectionFilled);
+  }
+
+  /**
+   * Baut aus den geschlossenen Ellipsenpunkten eine triangulierte Fläche.
+   * @param {THREE.Vector3[]} points Geschlossene Punkte der Ellipse.
+   * @param {boolean} visible Gibt an, ob die Fläche sichtbar sein soll.
+   * @returns {void} Ergebnis der beschriebenen Operation.
+   */
+  function updateSectionFill(points, visible) {
+    sectionMesh.visible = visible && points.length >= 3;
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    if (points.length >= 3) {
+      const indices = [];
+      for (let index = 1; index < points.length - 1; index++) {
+        indices.push(0, index, index + 1);
+      }
+      geometry.setIndex(indices);
+    }
+    sectionMesh.geometry.dispose();
+    sectionMesh.geometry = geometry;
   }
   return { update, framingObjects: [cone] };
 }

@@ -7,7 +7,8 @@ import { defaults, maximumControlHeight } from "./config.js";
 const angle = document.getElementById("angle"),
   height = document.getElementById("height"),
   opacity = document.getElementById("opacity"),
-  animate = document.getElementById("animate");
+  animate = document.getElementById("animate"),
+  fillToggle = document.getElementById("fill-toggle");
 const viewport = createViewport(document.getElementById("view"), {
   fov: 42,
   position: [7, 5, 8],
@@ -23,7 +24,8 @@ const status = createStatus(
   document.getElementById("info-template"),
 );
 let animating = false,
-  startedAt = 0;
+  startedAt = 0,
+  sectionFilled = false;
 
 /**
  * Plant die Einrahmung des Kegels nach Initialisierung oder Größenänderung.
@@ -59,7 +61,7 @@ function update() {
   }
   const h = Number(height.value),
     section = ellipseSection(h, slope);
-  model.update(h, slope, Number(opacity.value), section);
+  model.update(h, slope, Number(opacity.value), section, sectionFilled);
   status.update(section, maximum);
   document.getElementById("av").textContent =
     Number(angle.value).toFixed(1) + "°";
@@ -91,6 +93,34 @@ function reset() {
   height.min = 1;
   height.value = defaults.height;
   opacity.value = defaults.opacity;
+  sectionFilled = false;
+  updateFillToggleLabel();
+  update();
+}
+
+/**
+ * Aktualisiert Beschriftung und Zugänglichkeitszustand des Flächenknopfs.
+ * Keine Parameter.
+ * @returns {void} Ergebnis der beschriebenen Operation.
+ */
+function updateFillToggleLabel() {
+  if (sectionFilled) {
+    fillToggle.textContent = fillToggle.dataset.hide;
+    fillToggle.setAttribute("aria-pressed", "true");
+  } else {
+    fillToggle.textContent = fillToggle.dataset.show;
+    fillToggle.setAttribute("aria-pressed", "false");
+  }
+}
+
+/**
+ * Schaltet die Einfärbung der Ellipsenfläche um.
+ * Keine Parameter.
+ * @returns {void} Ergebnis der beschriebenen Operation.
+ */
+function toggleSectionFill() {
+  sectionFilled = !sectionFilled;
+  updateFillToggleLabel();
   update();
 }
 /**
@@ -124,5 +154,7 @@ for (const input of [angle, height, opacity]) {
 }
 document.getElementById("reset").addEventListener("click", reset);
 animate.addEventListener("click", toggleAnimation);
+fillToggle.addEventListener("click", toggleSectionFill);
+updateFillToggleLabel();
 update();
 viewport.renderer.setAnimationLoop(render);
