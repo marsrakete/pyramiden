@@ -3,8 +3,11 @@
 Eine Browserfassung mit gesetzten LaTeX-Formeln ist unter
 [TECHNICAL.html](TECHNICAL.html) verfügbar.
 
-Die drei Seiten sind `index.html` (Pyramiden und Navigation),
-`kegelschnitt_ellipse_begrenzt.html` (Kegelschnitt) und `wortgeflecht.html`.
+Die beiden Seiten sind `index.html` (Pyramiden und Navigation) und
+`kegelschnitt_ellipse_begrenzt.html` (Kegelschnitt). Das eigenständige Projekt
+Wortgeflecht liegt vollständig unter `Wortgeflecht/` und besitzt eine eigene
+Dokumentation (`Wortgeflecht/README.md`) und gemeinsame Bibliothek unter
+`Wortgeflecht/share/`.
 Sie verwenden native ES-Module
 ohne Build-Schritt. Zum lokalen Öffnen ist ein HTTP-Server erforderlich:
 
@@ -24,11 +27,6 @@ Die öffentliche Darstellung lädt Three.js weiterhin von jsDelivr.
   `status.js` für die Template-Anzeige und `main.js` für Zustand und DOM-Ereignisse.
 - `shared/`: gemeinsame Ansicht mit Orbit-Steuerung, Kameraeinrahmung,
   rekursive Ressourcenfreigabe und Template-Bindung.
-- `word-network/`: `graph.js` normalisiert die Eingaben und bildet Ketten sowie
-  Raumverbindungen; `simulation.js` berechnet das Federnetz; `model.js` zeichnet
-  Ebenen und Linien und bindet Wort-Templates über Three.js CSS2DRenderer ein.
-  `interaction.js` verarbeitet Pointer-Capture und Tastaturbewegungen.
-  `main.js` hält Zustand, DOM-Bindung und Renderzyklus. Vorgaben liegen in `config.js`.
 - `styles/`: separate Stylesheets der beiden Seiten.
 - HTML-Dateien: Seitenstruktur, deutsche Beschriftungen und Status-Templates.
   Es gibt vorerst keine Lokalisierung und keine Übersetzungsinfrastruktur.
@@ -303,30 +301,6 @@ k^2y^2\approx7{,}063972.
 $$
 
 Der Punkt liegt damit gleichzeitig auf der Ebene und auf dem Kegelmantel.
-
-### Wortgeflecht
-
-Die Felder X, Y und Z gehören zu XY-, YZ- und XZ-Ebene. Leerraum trennt Wörter.
-NFC-Normalisierung und deutsche Kleinschreibung bestimmen ihre Identität; angezeigt
-wird die erste eingegebene Schreibweise. Satzzeichen bleiben Bestandteil des Wortes.
-Pro Ebene entsteht ein Knoten je unterschiedlichem Wort, höchstens 60. Bei längeren
-Listen erscheint ein Hinweis. Die Texte selbst bleiben vollständig erhalten.
-Die Eingabe wird nach 200 ms Ruhe neu aufgebaut; bestehende Verformungen werden dabei zurückgesetzt.
-
-Innerhalb einer Ebene werden die Wörter in Eingabereihenfolge verbunden. Derselbe
-Begriff auf verschiedenen Ebenen erhält paarweise gestrichelte Raumverbindungen.
-Die Anfangslängen aller Kanten bilden die Ruhelängen des Federnetzes. Eine schwache
-Rückstellkraft und Dämpfung stabilisieren die übrigen Knoten; die Simulation verwendet
-begrenzte Teilschritte und überspringt lange Pausen, damit Hintergrundtabs keine
-instabilen Kräfte erzeugen.
-
-Ziehen erfolgt auf einer zur Kamera parallelen Ebene durch den Knoten. Durch Drehen
-der Ansicht lässt sich anschließend aus einer anderen Richtung weiterziehen.
-Der bewegte Knoten bleibt fixiert. Pfeiltasten verschieben fokussierte Knoten in
-derselben Bildschirmebene. Beim Bearbeiten eines Knotens stoppt die automatische
-Rotation. Reset entfernt Fixierungen und Geschwindigkeiten, stellt die Originalpunkte
-und Kamera wieder her und behält alle Eingaben. Es gibt keine Speicherung oder
-Übermittlung der Eingabetexte; beim Neuladen erscheinen die HTML-Beispielwerte.
 
 ### Prüfungen
 

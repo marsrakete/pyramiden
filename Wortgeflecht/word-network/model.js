@@ -3,7 +3,7 @@ import {
   CSS2DObject,
   CSS2DRenderer,
 } from "three/addons/renderers/CSS2DRenderer.js";
-import { clearGroup } from "../shared/resources.js";
+import { clearGroup } from "../share/resources.js";
 import { planes } from "./config.js";
 
 /**

@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { createViewport } from "../shared/viewport.js";
-import { fitCameraToObjects } from "../shared/camera.js";
+import { createViewport } from "../share/viewport.js";
+import { fitCameraToObjects } from "../share/camera.js";
 import { buildGraph } from "./graph.js";
 import { createNetworkModel } from "./model.js";
 import { createInteraction } from "./interaction.js";

@@ -21,11 +21,7 @@ async function interactionTest({ page }, info) {
   }
   page.on("pageerror", collect);
   await page.route("https://cdn.jsdelivr.net/npm/three@0.180.0/**", localThree);
-  await page.goto("/");
-  await expect(
-    page.getByRole("link", { name: "Kegelschnitt", exact: false }),
-  ).toHaveAttribute("href", "./kegelschnitt_ellipse_begrenzt.html");
-  await page.getByRole("link", { name: "Wortgeflecht", exact: false }).click();
+  await page.goto("/Wortgeflecht/");
   await expect(page.locator(".word-node")).toHaveCount(12);
   await expect(page.locator("#link-count")).toHaveText("4");
   await page.locator("#view").scrollIntoViewIfNeeded();
@@ -125,8 +121,9 @@ async function dragNode(page, box, touch) {
 /** Prüft wiederholten Modellaufbau ohne doppelte Ebenen oder Ressourcenlecks. Keine Parameter. @returns {Promise<object>} Vertragswerte. */
 async function modelContract() {
   const THREE = await import("three");
-  const { createNetworkModel } = await import("/word-network/model.js");
-  const { buildGraph } = await import("/word-network/graph.js");
+  const { createNetworkModel } =
+    await import("/Wortgeflecht/word-network/model.js");
+  const { buildGraph } = await import("/Wortgeflecht/word-network/graph.js");
   const container = document.createElement("div"),
     scene = new THREE.Scene();
   const model = createNetworkModel(

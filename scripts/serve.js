@@ -1,5 +1,5 @@
 import http from "node:http";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -32,8 +32,13 @@ async function serve(request, response) {
       response.writeHead(403).end();
       return;
     }
-    const content = await readFile(file);
-    let type = types[path.extname(file)];
+    let filePath = file;
+    const fileInfo = await stat(filePath);
+    if (fileInfo.isDirectory()) {
+      filePath = path.join(filePath, "index.html");
+    }
+    const content = await readFile(filePath);
+    let type = types[path.extname(filePath)];
     if (!type) {
       type = "application/octet-stream";
     }

@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseWords, buildGraph } from "../word-network/graph.js";
+import { parseWords, buildGraph } from "../Wortgeflecht/word-network/graph.js";
 import {
   pinNode,
   stepSimulation,
   resetGraph,
-} from "../word-network/simulation.js";
+} from "../Wortgeflecht/word-network/simulation.js";
 
 /** Prüft die öffentlichen APIs der Wortgeflecht-Module. Keine Parameter. @returns {Promise<void>} Prüfabschluss. */
 async function contracts() {
@@ -18,7 +18,9 @@ async function contracts() {
   };
   for (const [file, exports] of Object.entries(expected)) {
     assert.deepEqual(
-      Object.keys(await import(`../word-network/${file}.js`)).sort(),
+      Object.keys(
+        await import(`../Wortgeflecht/word-network/${file}.js`),
+      ).sort(),
       exports.sort(),
     );
   }
