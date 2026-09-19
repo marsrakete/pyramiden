@@ -101,7 +101,7 @@
         margin-left: 8px;
         color: #79ded1;
       }
-    .note {
+      .note {
         color: #8fa4c1;
         font-size: 0.92em;
       }
@@ -113,7 +113,11 @@
         background: #0a1120;
         border: 1px solid #ffffff16;
         border-radius: 8px;
-        font: 0.82rem/1.55 ui-monospace, SFMono-Regular, Consolas, monospace;
+        font:
+          0.82rem/1.55 ui-monospace,
+          SFMono-Regular,
+          Consolas,
+          monospace;
       }
       .why {
         padding: 13px 16px;
@@ -195,6 +199,12 @@
         \[A=1-k^2m^2,\qquad B=-2k^2hm,\qquad C=-k^2h^2\]
       </div>
       <div class="formula">\[Ax^2+Bx+z^2+C=0\]</div>
+      <pre class="code"><code>const A = 1 - k * k * slope * slope;
+const B = -2 * k * k * height * slope;
+const C = -k * k * height * height;
+if (A &lt;= 0) {
+  return null;
+}</code></pre>
       <p class="note">
         Wenn \(A\le 0\) ist, liegt in diesem Modell kein geschlossener
         elliptischer Schnitt vor. `ellipseSection` gibt dann `null` zurück.
@@ -206,14 +216,21 @@
         durch \(A\):
       </p>
       <div class="formula">\[x^2+\frac BAx=-\frac{z^2+C}{A}\]</div>
-      <p>
-        Wir ergänzen auf beiden Seiten den Term
-        ​\(\left(\frac{B}{2A}\right)^2\):
-      </p>
+      <div class="why">
+        <strong>Warum wird ergänzt?</strong> Der Term \(Bx\) verhindert, dass
+        die Gleichung bereits um den Mittelpunkt der Ellipse zentriert ist. Wir
+        wollen aus \(x^2+\frac BAx\) ein vollständiges Quadrat machen, denn nur
+        dann lässt sich der Mittelpunkt direkt ablesen. Für \(x^2+px\) ist der
+        passende Ergänzungsterm \(\left(\frac p2\right)^2\). Hier ist \(p=\frac
+        BA\), also lautet er \(\left(\frac{B}{2A}\right)^2\). Derselbe Term wird
+        auf beiden Seiten addiert, damit sich der Wert der Gleichung nicht
+        verändert.
+      </div>
+      <p>Nach dieser Addition und dem Umschreiben als Binom:</p>
       <div class="formula">
         \[\left(x+\frac{B}{2A}\right)^2=\frac{B^2}{4A^2}-\frac{z^2+C}{A}\]
       </div>
-      <p>Nach Multiplikation mit (A):</p>
+      <p>Nach Multiplikation mit \(A\):</p>
       <div class="formula">
         \[A\left(x+\frac{B}{2A}\right)^2+z^2=\frac{B^2}{4A}-C\]
       </div>
@@ -221,12 +238,28 @@
       <div class="formula">\[x_c=-\frac{B}{2A},\qquad Q=\frac{B^2}{4A}-C\]</div>
       <p>Damit erhalten wir:</p>
       <div class="formula">\[A(x-x_c)^2+z^2=Q\]</div>
+      <pre class="code"><code>const center = -B / (2 * A);
+const rhs = (B * B) / (4 * A) - C;</code></pre>
 
       <h3>4. Standardform und Halbachsen</h3>
-      <p>Durch Division durch \(Q\) entsteht die Standardform:</p>
+      <p>
+        Wir haben jetzt die Gleichung der verschobenen Schnittkurve
+        \(A(x-x_c)^2+z^2=Q\). Durch Division der gesamten Gleichung durch \(Q\)
+        wird die rechte Seite zu 1. Das ist die Standardform einer Ellipse: Zwei
+        quadrierte, normierte Abstände addieren sich zu 1.
+      </p>
       <div class="formula">\[\frac{(x-x_c)^2}{Q/A}+\frac{z^2}{Q}=1\]</div>
       <p>Die Halbachsen sind damit direkt:</p>
       <div class="formula">\[a_x=\sqrt{\frac QA},\qquad a_z=\sqrt Q\]</div>
+      <p>
+        Die Halbachsen sind die Strecken vom Mittelpunkt zum Rand der Ellipse:
+        \(a_x\) verläuft in x-Richtung, \(a_z\) in z-Richtung. Setzt man
+        \(z=0\), bleibt \((x-x_c)^2=Q/A\); daher ist \(a_x=\sqrt{Q/A}\). Setzt
+        man dagegen \(x=x_c\), bleibt \(z^2=Q\); daher ist \(a_z=\sqrt Q\).
+      </p>
+      <pre class="code"><code>const rhs = (B * B) / (4 * A) - C;
+const ax = Math.sqrt(rhs / A);
+const az = Math.sqrt(rhs);</code></pre>
       <p>
         Diese beiden Werte werden in JavaScript als <code>ax</code> und
         <code>az</code> verwendet.
@@ -241,6 +274,13 @@
       <div class="formula">
         \[P(t)=\bigl(x_c+a_x\cos(t),\;h+m(x_c+a_x\cos(t)),\;a_z\sin(t)\bigr)\]
       </div>
+      <pre class="code"><code>for (let i = 0; i &lt; sampleCount; i++) {
+  const phase = (i / sampleCount) * Math.PI * 2;
+  const x = center + ax * Math.cos(phase);
+  const z = az * Math.sin(phase);
+  const y = height + slope * x;
+  points.push([x, y, z]);
+}</code></pre>
       <p>
         Der Rendercode verwendet 360 Werte \(t_i=2\pi i/360\) und verbindet die
         Punkte mit einer geschlossenen <code>THREE.LineLoop</code>.
