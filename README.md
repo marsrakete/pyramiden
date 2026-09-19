@@ -90,3 +90,4 @@ du zoomen. Fokussierte Wörter lassen sich auch mit den Pfeiltasten verschieben.
 Die eingegebenen Wörter bleiben erhalten. Ein Neuladen der Seite lädt die Beispiele.
 
 Entwicklung, Modulstruktur und Tests: [TECHNICAL.md](TECHNICAL.md).
+Die mathematische Herleitung mit gesetzten Formeln: [TECHNICAL.html](TECHNICAL.html).

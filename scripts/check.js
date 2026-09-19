@@ -30,4 +30,11 @@ for (const file of [
     throw new Error(`Three.js-Version in ${file} prüfen`);
   }
 }
+const technical = readFileSync("TECHNICAL.html", "utf8");
+if (
+  !technical.includes("mathjax@3") ||
+  !technical.includes('aria-label="Rechenablauf"')
+) {
+  throw new Error("TECHNICAL.html muss MathJax und den Rechenablauf enthalten");
+}
 console.log("Syntax, externe Assets und CDN-Version geprüft.");

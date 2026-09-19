@@ -1,4 +1,4 @@
-import { distanceAt, bestMeetAngle } from "./geometry.js";
+import { distanceAt, exactMeeting } from "./geometry.js";
 import { mountTemplate } from "../shared/template.js";
 /**
  * Bindet das Status-Template an den Ausgabecontainer.
@@ -15,17 +15,17 @@ export function createStatus(target, template) {
    * @returns {void} Ergebnis der beschriebenen Operation.
    */
   function update(p, finalMode) {
-    const [angle, distance] = bestMeetAngle(p);
+    const meeting = exactMeeting(p);
     if (finalMode) {
       values.mode.textContent = target.dataset.final;
     } else {
       values.mode.textContent = target.dataset.separate;
     }
     values.distance.textContent = distanceAt(p, p.angle).toFixed(3);
-    values.angle.textContent = angle.toFixed(2) + "°";
-    values.minimum.textContent = distance.toFixed(3);
-    messages.exact.hidden = distance >= 0.01;
-    messages.apart.hidden = distance < 0.01;
+    values.angle.textContent = meeting.angle.toFixed(2) + "°";
+    values.minimum.textContent = meeting.distance.toFixed(3);
+    messages.exact.hidden = meeting.distance >= 0.01;
+    messages.apart.hidden = meeting.distance < 0.01;
   }
   return { update };
 }

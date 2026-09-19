@@ -73,19 +73,40 @@
         <label for="dq"
           >Quadrat: Tiefe <span class="value" id="dqv"></span
         ></label>
-        <input id="dq" type="range" min=".5" max="5" step=".05" value="3" />
+        <input id="dq" type="range" min=".5" max="100" step="any" value="5" />
         <label for="dt"
           >Dreieck: Höhe der Basis <span class="value" id="dtv"></span
         ></label>
-        <input id="dt" type="range" min=".5" max="5" step=".05" value="2" />
+        <input
+          id="dt"
+          type="range"
+          min=".5"
+          max="100"
+          step="any"
+          value="4.3301270189"
+        />
         <label for="hq"
           >Quadrat-Pyramide: Höhe <span class="value" id="hqv"></span
         ></label>
-        <input id="hq" type="range" min=".3" max="5" step=".05" value="2" />
+        <input
+          id="hq"
+          type="range"
+          min=".3"
+          max="100"
+          step="any"
+          value="3.5355339059"
+        />
         <label for="ht"
           >Dreieck-Pyramide: Höhe <span class="value" id="htv"></span
         ></label>
-        <input id="ht" type="range" min=".3" max="5" step=".05" value="2.4" />
+        <input
+          id="ht"
+          type="range"
+          min=".3"
+          max="100"
+          step="any"
+          value="4.0824829046"
+        />
         <label for="angle"
           >Klappwinkel <span class="value" id="av"></span
         ></label>
@@ -94,12 +115,15 @@
           type="range"
           min="0"
           max="180"
-          step=".1"
+          step="any"
           value="52.4"
         />
         <button class="primary" id="meet">Spitzen zusammenführen</button>
         <button class="secondary" id="reset">
-          Ausgangslage (5 / 3 / 2 / 2 / 2,4 / 52,4°)
+          Ausgangslage (alle Kanten 5 / Klappwinkel 52,4°)
+        </button>
+        <button class="secondary" id="resetFlat">
+          Flache Ausgangslage (5 / 5 / 5 / Winkel 0°)
         </button>
         <button
           class="secondary"

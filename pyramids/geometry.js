@@ -165,6 +165,34 @@ export function bestMeetAngle(p) {
 }
 
 /**
+ * Berechnet Höhe und Klappwinkel für exakt zusammenfallende Spitzen.
+ * @param {object} p Abmessungen der Pyramiden.
+ * @returns {{height: number, angle: number, distance: number}} Exakte Zielwerte.
+ */
+export function exactMeeting(p) {
+  validateParameters(p);
+  const targetY = p.hq;
+  const targetZ = p.dq / 2;
+  const offset = p.dt / 3;
+  const radius = Math.hypot(targetY, targetZ);
+  if (radius <= offset) {
+    return {
+      height: 0.3,
+      angle: 0,
+      distance: Math.hypot(targetY, targetZ + offset),
+    };
+  }
+  const height = Math.sqrt(radius * radius - offset * offset);
+  let angle = THREE.MathUtils.radToDeg(
+    Math.atan2(targetZ, targetY) - Math.atan2(-offset, height),
+  );
+  if (angle < 0) {
+    angle += 360;
+  }
+  return { height, angle, distance: 0 };
+}
+
+/**
  * Lehnt fehlende, nicht endliche oder nicht positive Abmessungen ab.
  * @param {object} p Zu prüfende Abmessungen.
  * @returns {void} Wirft bei ungültigen Abmessungen einen TypeError.

@@ -3,8 +3,8 @@ import { createViewport } from "../shared/viewport.js";
 import { fitCameraToObjects } from "../shared/camera.js";
 import { createPyramidModel } from "./model.js";
 import { createStatus } from "./status.js";
-import { bestMeetAngle } from "./geometry.js";
-import { defaults } from "./config.js";
+import { exactMeeting } from "./geometry.js";
+import { defaults, flatDefaults } from "./config.js";
 const inputs = {};
 for (const id of Object.keys(defaults)) {
   inputs[id] = document.getElementById(id);
@@ -115,14 +115,31 @@ function reset() {
   tolerance.value = 1;
   rebuild();
 }
+
+/**
+ * Setzt Grundflächen, Kantenlängen und Klappwinkel auf eine flache Ausgangslage.
+ * Keine Parameter.
+ * @returns {void} Aktualisiert Modell und Anzeige.
+ */
+function resetFlat() {
+  for (const [id, value] of Object.entries(flatDefaults)) {
+    inputs[id].value = value;
+  }
+  tolerance.value = 1;
+  rebuild();
+}
 /**
  * Stellt den Winkel mit dem kleinsten Spitzenabstand ein.
  * Keine Parameter.
  * @returns {void} Ergebnis der beschriebenen Operation.
  */
 function meet() {
-  const [angle] = bestMeetAngle(params());
-  inputs.angle.value = angle;
+  const result = exactMeeting(params());
+  inputs.ht.value = Math.min(
+    Number(inputs.ht.max),
+    Math.max(Number(inputs.ht.min), result.height),
+  );
+  inputs.angle.value = result.angle;
   rebuild();
 }
 /**
@@ -138,6 +155,7 @@ wire.addEventListener("change", rebuild);
 tolerance.addEventListener("input", rebuild);
 modeButton.addEventListener("click", toggleMode);
 document.getElementById("reset").addEventListener("click", reset);
+document.getElementById("resetFlat").addEventListener("click", resetFlat);
 document.getElementById("meet").addEventListener("click", meet);
 rebuild();
 viewport.renderer.setAnimationLoop(render);

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
-import { defaults } from "../pyramids/config.js";
+import { defaults, flatDefaults } from "../pyramids/config.js";
 import {
   vertices,
   triGeom,
@@ -10,6 +10,7 @@ import {
   apexT,
   distanceAt,
   bestMeetAngle,
+  exactMeeting,
 } from "../pyramids/geometry.js";
 import { maxHeightForAngle, ellipseSection } from "../ellipse/geometry.js";
 import { clearGroup } from "../shared/resources.js";
@@ -34,7 +35,12 @@ function close(actual, expected, tolerance = 1e-8) {
 /** Prüft die öffentlichen Exportverträge aller Fach- und Shared-Module. Keine Parameter. @returns {Promise<void>} Abschluss der Prüfungen. */
 async function moduleContracts() {
   const contracts = {
-    "pyramids/config": ["defaults", "squareFaces", "triangleFaces"],
+    "pyramids/config": [
+      "defaults",
+      "flatDefaults",
+      "squareFaces",
+      "triangleFaces",
+    ],
     "pyramids/geometry": [
       "vertices",
       "triGeom",
@@ -43,6 +49,7 @@ async function moduleContracts() {
       "apexT",
       "distanceAt",
       "bestMeetAngle",
+      "exactMeeting",
     ],
     "pyramids/model": ["createPyramidModel"],
     "pyramids/status": ["createStatus"],
@@ -72,14 +79,32 @@ function pyramidGeometry() {
   const points = vertices(defaults);
   assert.equal(points.square.length, 5);
   assert.equal(points.triangle.length, 4);
-  assert.deepEqual(apexQ(defaults).toArray(), [0, 2, 1.5]);
-  assert.deepEqual(apexT(defaults, 0).toArray(), [0, 2.4, -2 / 3]);
-  close(distanceAt(defaults, 0), Math.hypot(0.4, 1.5 + 2 / 3));
-  const [angle, distance] = bestMeetAngle(defaults);
-  const expectedAngle =
-    ((Math.atan2(1.5, 2) - Math.atan2(-2 / 3, 2.4)) * 180) / Math.PI;
-  close(angle, expectedAngle, 1e-5);
-  close(distance, Math.abs(2.5 - Math.hypot(2.4, 2 / 3)));
+  assert.deepEqual(apexQ(defaults).toArray(), [
+    0,
+    defaults.hq,
+    defaults.dq / 2,
+  ]);
+  assert.deepEqual(apexT(defaults, 0).toArray(), [
+    0,
+    defaults.ht,
+    -defaults.dt / 3,
+  ]);
+  close(
+    distanceAt(defaults, 0),
+    apexQ(defaults).distanceTo(apexT(defaults, 0)),
+  );
+  close(Math.hypot(defaults.w / 2, defaults.dq / 2, defaults.hq), 5);
+  close(Math.hypot(defaults.w / 2, defaults.dt), 5);
+  close(Math.hypot(defaults.w / 2, defaults.ht, defaults.dt / 3), 5);
+  close(Math.hypot(defaults.ht, (2 * defaults.dt) / 3), 5);
+  const meeting = exactMeeting(defaults);
+  close(meeting.distance, 0);
+  close(
+    apexQ({ ...defaults, ht: meeting.height }).distanceTo(
+      apexT({ ...defaults, ht: meeting.height }, meeting.angle),
+    ),
+    0,
+  );
   const small = { w: 0.01, dq: 0.01, dt: 0.01, hq: 0.01, ht: 0.01, angle: 180 };
   assert.ok(Number.isFinite(bestMeetAngle(small)[1]));
   assert.ok(Number.isFinite(apexT(small).y));

@@ -1,10 +1,18 @@
 export const defaults = Object.freeze({
   w: 5,
-  dq: 3,
-  dt: 2,
-  hq: 2,
-  ht: 2.4,
+  dq: 5,
+  dt: Math.sqrt(75 / 4),
+  hq: Math.sqrt(25 / 2),
+  ht: Math.sqrt(50 / 3),
   angle: 52.4,
+});
+export const flatDefaults = Object.freeze({
+  w: 5,
+  dq: 5,
+  dt: Math.sqrt(75 / 4),
+  hq: Math.sqrt(25 / 2),
+  ht: Math.sqrt(50 / 3),
+  angle: 0,
 });
 export const squareFaces = [
   [0, 1, 2],

@@ -44,10 +44,20 @@ async function pagesAndControls({ page }, testInfo) {
   await setRange(page, "w", "1");
   await expect(page.locator("#wv")).toHaveText("1.00");
   await page.locator("#meet").click();
-  await expect(page.locator("#av")).toHaveText("52.4°");
+  await expect(page.locator('#status [data-message="exact"]')).toBeVisible();
+  await expect(page.locator('#status [data-value="distance"]')).toHaveText(
+    "0.000",
+  );
   await page.locator("#reset").click();
   await expect(page.locator("#wv")).toHaveText("5.00");
   await expect(page.locator("#tolv")).toHaveText("1.0°");
+  await page.locator("#resetFlat").click();
+  await expect(page.locator("#av")).toHaveText("0.0°");
+  await expect(page.locator("#wv")).toHaveText("5.00");
+  await expect(page.locator("#dqv")).toHaveText("5.00");
+  await expect(page.locator("#dtv")).toHaveText("4.33");
+  await expect(page.locator("#hqv")).toHaveText("3.54");
+  await expect(page.locator("#htv")).toHaveText("4.08");
   await page.locator("#wire").check();
   await page
     .locator("#view")

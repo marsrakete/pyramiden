@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0d1424" />
+    <title>Technische Dokumentation · Pyramiden</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" href="./pyramiden-icon.png" />
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, system-ui, sans-serif;
+        color: #dfe8f7;
+        background: #0d1424;
+      }
+      body {
+        margin: 0;
+        line-height: 1.65;
+      }
+      main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 32px 24px 70px;
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 34px;
+      }
+      nav a {
+        color: #10232d;
+        background: #79ded1;
+        border-radius: 9px;
+        padding: 8px 13px;
+        text-decoration: none;
+        font-size: 13px;
+      }
+      nav a.secondary {
+        color: #dfe8f7;
+        background: #202d45;
+      }
+      h1 {
+        font-size: clamp(30px, 5vw, 50px);
+        letter-spacing: -0.05em;
+        line-height: 1.05;
+        margin: 0 0 18px;
+      }
+      h2 {
+        color: #79ded1;
+        margin-top: 48px;
+        border-bottom: 1px solid #ffffff1c;
+        padding-bottom: 8px;
+      }
+      h3 {
+        color: #b6a0ff;
+        margin-top: 32px;
+      }
+      p,
+      li {
+        color: #b9c8dc;
+      }
+      code {
+        color: #f6bd77;
+        background: #182237;
+        border-radius: 4px;
+        padding: 2px 5px;
+      }
+      .formula {
+        overflow-x: auto;
+        padding: 12px 16px;
+        margin: 15px 0;
+        background: #111c30;
+        border-left: 3px solid #79ded1;
+      }
+      .example {
+        padding: 18px;
+        background: #151f34;
+        border-radius: 10px;
+      }
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 8px;
+        margin: 22px 0;
+      }
+      .flow span {
+        display: grid;
+        place-items: center;
+        min-height: 54px;
+        padding: 8px;
+        text-align: center;
+        color: #dfe8f7;
+        background: #202d45;
+        border: 1px solid #ffffff18;
+        border-radius: 8px;
+      }
+      .flow span:not(:last-child)::after {
+        content: "→";
+        margin-left: 8px;
+        color: #79ded1;
+      }
+    .note {
+        color: #8fa4c1;
+        font-size: 0.92em;
+      }
+      pre.code {
+        overflow-x: auto;
+        margin: 14px 0 20px;
+        padding: 16px;
+        color: #d8e6f7;
+        background: #0a1120;
+        border: 1px solid #ffffff16;
+        border-radius: 8px;
+        font: 0.82rem/1.55 ui-monospace, SFMono-Regular, Consolas, monospace;
+      }
+      .why {
+        padding: 13px 16px;
+        color: #c8d4e6;
+        background: #172238;
+        border-radius: 8px;
+      }
+    </style>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [
+            ["\\[", "\\]"],
+            ["$$", "$$"],
+          ],
+        },
+        svg: { fontCache: "global" },
+      };
+    </script>
+    <script
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+    ></script>
+  </head>
+  <body>
+    <main>
+      <nav aria-label="Dokumentation">
+        <a href="./index.html">← Hauptseite</a>
+        <a class="secondary" href="./wortgeflecht.html">Wortgeflecht</a>
+        <a class="secondary" href="./kegelschnitt_ellipse_begrenzt.html"
+          >Kegelschnitt</a
+        >
+        <a class="secondary" href="./TECHNICAL.md">Markdown-Fassung</a>
+      </nav>
+      <h1>Technische Dokumentation</h1>
+      <p>
+        Diese Seite erklärt die Berechnung der Ellipse im interaktiven
+        Kegelschnitt-Modell. Die Formeln werden mit <strong>MathJax</strong> aus
+        LaTeX gesetzt und sind deshalb im Browser als echte mathematische
+        Notation lesbar.
+      </p>
+
+      <h2>Kegelschnitt: Herleitung der Ellipse</h2>
+      <p>
+        Die Berechnung in <code>ellipse/geometry.js</code> verwendet keine
+        nachträgliche Annäherung. Jeder Kurvenpunkt entsteht direkt aus
+        derselben Kegelgleichung und Ebenengleichung.
+      </p>
+      <div class="flow" aria-label="Rechenablauf">
+        <span>Neigung α<br />Höhe h</span><span>m = tan α</span
+        ><span>Ebene einsetzen</span><span>Quadrat ergänzen</span
+        ><span>Halbachsen</span><span>Punkt P(t)</span>
+      </div>
+
+      <h3>1. Kegel und Schnittebene</h3>
+      <p>
+        Für die feste Kegelgeometrie gelten Höhe \(H=5\), Radius \(R=3\) und
+        damit \(k=R/H=3/5=0{,}6\):
+      </p>
+      <div class="formula">\[x^2+z^2=k^2y^2\]</div>
+      <p>
+        Mit Neigung \(\alpha\) und Mittelpunktshöhe \(h\) berechnet der Code
+        zunächst:
+      </p>
+      <div class="formula">\[m=\tan(\alpha)\]</div>
+      <p>Die Schnittebene lautet daher:</p>
+      <div class="formula">\[y=h+mx\]</div>
+
+      <h3>2. Einsetzen in die Kegelgleichung</h3>
+      <p>Wir ersetzen \(y\) durch \(h+mx\):</p>
+      <div class="formula">\[x^2+z^2=k^2(h+mx)^2\]</div>
+      <p>Das Quadrat wird ausmultipliziert:</p>
+      <div class="formula">\[(h+mx)^2=h^2+2hmx+m^2x^2\]</div>
+      <p>Nach dem Einsetzen und Verschieben aller Terme auf die linke Seite:</p>
+      <div class="formula">\[(1-k^2m^2)x^2-2k^2hmx+z^2-k^2h^2=0\]</div>
+      <p>Der Code fasst die Koeffizienten so zusammen:</p>
+      <div class="formula">
+        \[A=1-k^2m^2,\qquad B=-2k^2hm,\qquad C=-k^2h^2\]
+      </div>
+      <div class="formula">\[Ax^2+Bx+z^2+C=0\]</div>
+      <p class="note">
+        Wenn \(A\le 0\) ist, liegt in diesem Modell kein geschlossener
+        elliptischer Schnitt vor. `ellipseSection` gibt dann `null` zurück.
+      </p>
+
+      <h3>3. Quadratische Ergänzung</h3>
+      <p>
+        Ausgehend von \(Ax^2+Bx+z^2+C=0\) isolieren wir die x-Terme und teilen
+        durch \(A\):
+      </p>
+      <div class="formula">\[x^2+\frac BAx=-\frac{z^2+C}{A}\]</div>
+      <p>
+        Wir ergänzen auf beiden Seiten den Term
+        ​\(\left(\frac{B}{2A}\right)^2\):
+      </p>
+      <div class="formula">
+        \[\left(x+\frac{B}{2A}\right)^2=\frac{B^2}{4A^2}-\frac{z^2+C}{A}\]
+      </div>
+      <p>Nach Multiplikation mit (A):</p>
+      <div class="formula">
+        \[A\left(x+\frac{B}{2A}\right)^2+z^2=\frac{B^2}{4A}-C\]
+      </div>
+      <p>Wir definieren Mittelpunkt und rechte Seite:</p>
+      <div class="formula">\[x_c=-\frac{B}{2A},\qquad Q=\frac{B^2}{4A}-C\]</div>
+      <p>Damit erhalten wir:</p>
+      <div class="formula">\[A(x-x_c)^2+z^2=Q\]</div>
+
+      <h3>4. Standardform und Halbachsen</h3>
+      <p>Durch Division durch \(Q\) entsteht die Standardform:</p>
+      <div class="formula">\[\frac{(x-x_c)^2}{Q/A}+\frac{z^2}{Q}=1\]</div>
+      <p>Die Halbachsen sind damit direkt:</p>
+      <div class="formula">\[a_x=\sqrt{\frac QA},\qquad a_z=\sqrt Q\]</div>
+      <p>
+        Diese beiden Werte werden in JavaScript als <code>ax</code> und
+        <code>az</code> verwendet.
+      </p>
+
+      <h3>5. Einen 3D-Punkt berechnen</h3>
+      <p>Für \(t\in[0,2\pi)\) parametrisieren wir die Ellipse:</p>
+      <div class="formula">\[x(t)=x_c+a_x\cos(t),\qquad z(t)=a_z\sin(t)\]</div>
+      <p>Die dritte Koordinate kommt aus der ursprünglichen Ebenengleichung:</p>
+      <div class="formula">\[y(t)=h+m\,x(t)\]</div>
+      <p>Der räumliche Punkt lautet deshalb:</p>
+      <div class="formula">
+        \[P(t)=\bigl(x_c+a_x\cos(t),\;h+m(x_c+a_x\cos(t)),\;a_z\sin(t)\bigr)\]
+      </div>
+      <p>
+        Der Rendercode verwendet 360 Werte \(t_i=2\pi i/360\) und verbindet die
+        Punkte mit einer geschlossenen <code>THREE.LineLoop</code>.
+      </p>
+
+      <div class="example">
+        <h3>6. Zahlenbeispiel</h3>
+        <p>Für \(\alpha=38^\circ\), \(h=2{,}8\) und \(k=0{,}6\) gilt:</p>
+        <div class="formula">\[m=\tan(38^\circ)\approx0{,}781286\]</div>
+        <div class="formula">
+          \[A\approx0{,}780253,\quad B\approx-1{,}575072,\quad C=-2{,}8224\]
+        </div>
+        <div class="formula">
+          \[x_c\approx1{,}009334,\quad Q\approx3{,}617286\]
+        </div>
+        <div class="formula">
+          \[a_x\approx2{,}153147,\quad a_z\approx1{,}901917\]
+        </div>
+        <p>Für \(t=\pi/3\), also \(\cos(t)=1/2\) und \(\sin(t)=\sqrt3/2\):</p>
+        <div class="formula">
+          \[x\approx2{,}085907,\qquad z\approx1{,}647108\]
+        </div>
+        <div class="formula">
+          \[y=2{,}8+0{,}781286\cdot2{,}085907\approx4{,}429689\]
+        </div>
+        <p>Der Punkt ist damit:</p>
+        <div class="formula">
+          \[P(\pi/3)\approx(2{,}085907,\;4{,}429689,\;1{,}647108)\]
+        </div>
+        <p>Kontrolle:</p>
+        <div class="formula">
+          \[x^2+z^2\approx7{,}063972\qquad k^2y^2\approx7{,}063972\]
+        </div>
+        <p>
+          Außerdem gilt \(y-h-mx\approx0\). Der Punkt liegt also gleichzeitig
+          auf Ebene und Kegelmantel.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>
