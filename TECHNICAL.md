@@ -5,9 +5,8 @@ Eine Browserfassung mit gesetzten LaTeX-Formeln ist unter
 
 Die beiden Seiten sind `index.html` (Pyramiden und Navigation) und
 `kegelschnitt_ellipse_begrenzt.html` (Kegelschnitt). Das eigenständige Projekt
-Wortgeflecht liegt vollständig unter `Wortgeflecht/` und besitzt eine eigene
-Dokumentation (`Wortgeflecht/README.md`) und gemeinsame Bibliothek unter
-`Wortgeflecht/share/`.
+Wortgeflecht ist ein eigenständiges Projekt unter `C:\Projekte\wortgeflecht`
+und gehört nicht mehr zum Quellbaum dieses Pyramiden-Projekts.
 Sie verwenden native ES-Module
 ohne Build-Schritt. Zum lokalen Öffnen ist ein HTTP-Server erforderlich:
 

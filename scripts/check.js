@@ -5,8 +5,6 @@ for (const directory of [
   "shared",
   "pyramids",
   "ellipse",
-  "Wortgeflecht/word-network",
-  "Wortgeflecht/share",
   "scripts",
   "tests",
 ]) {
@@ -21,7 +19,6 @@ for (const directory of [
 for (const file of [
   "index.html",
   "kegelschnitt_ellipse_begrenzt.html",
-  "Wortgeflecht/index.html",
 ]) {
   const html = readFileSync(file, "utf8");
   if (/<style>|<script type="module">|\sstyle=/.test(html)) {
